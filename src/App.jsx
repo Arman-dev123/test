@@ -4,6 +4,8 @@ import { supabase } from './supabaseClient';
 function App() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
+  // 1. Removed 'address' from the state object
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -14,7 +16,7 @@ function App() {
     e.preventDefault();
     setLoading(true);
 
-    // Sending only name, email, and phone to Supabase
+    // 2. Sending only the remaining three fields to Supabase
     const { error } = await supabase
       .from('profiles')
       .insert([
