@@ -1,75 +1,121 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from './supabaseClient';
+import { CheckCircle2, Send } from 'lucide-react';
 
 function App() {
-  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
-  // Form State
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
+    email: '',
     phone: '',
-    address: ''
+    address: '' // Kept as requested in your column list
   });
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-    supabase.auth.onAuthStateChange((_event, session) => setSession(session));
-  }, []);
-
-  const handleSubmitDetails = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // This sends data to the 'profiles' table we just created
     const { error } = await supabase
       .from('profiles')
       .insert([
         { 
           full_name: formData.full_name, 
+          email: formData.email,
           phone: formData.phone, 
-          address: formData.address,
-          user_id: session.user.id // Links the record to the logged-in user
+          address: formData.address 
         }
       ]);
 
     setLoading(false);
-    if (error) alert(error.message);
-    else alert('Details saved to database!');
+    if (error) {
+      alert("Error: " + error.message);
+    } else {
+      setSubmitted(true);
+    }
   };
 
-  if (!session) {
+  if (submitted) {
     return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
-        <h1>Please Login First</h1>
-        <p>Use the login logic from the previous step to get a session.</p>
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAF9F6', fontFamily: 'serif' }}>
+        <div style={{ textAlign: 'center', padding: '40px', background: 'white', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+          <CheckCircle2 size={60} color="#C5A059" style={{ margin: '0 auto 20px' }} />
+          <h2 style={{ fontSize: '2rem', color: '#0f172a' }}>Request Received</h2>
+          <p style={{ color: '#64748b' }}>Our ghostwriting experts will contact you shortly.</p>
+          <button onClick={() => setSubmitted(false)} style={{ marginTop: '20px', background: 'none', border: '1px solid #C5A059', color: '#C5A059', padding: '10px 20px', cursor: 'pointer' }}>Send another request</button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>User Details Form</h2>
-      <form onSubmit={handleSubmitDetails} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input 
-          placeholder="Full Name" 
-          onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
-          required 
-        />
-        <input 
-          placeholder="Phone Number" 
-          onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-        />
-        <textarea 
-          placeholder="Address" 
-          onChange={(e) => setFormData({...formData, address: e.target.value})} 
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Saving...' : 'Save Details'}
-        </button>
-      </form>
+    <div style={{ minHeight: '100vh', backgroundColor: '#FAF9F6', padding: '80px 20px', fontFamily: 'sans-serif' }}>
+      <div style={{ maxWidth: '500px', margin: '0 auto', background: 'white', padding: '40px', borderRadius: '4px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+        
+        <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontFamily: 'serif', fontSize: '2.5rem', color: '#0f172a', marginBottom: '10px' }}>Ghost Writing</h1>
+          <p style={{ color: '#C5A059', fontWeight: 'bold', letterSpacing: '2px', fontSize: '12px', uppercase: 'true' }}>REQUEST A CONSULTATION</p>
+        </header>
 
-      <hr style={{ margin: '20px 0' }} />
-      <button onClick={() => supabase.auth.signOut()}>Sign Out</button>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>FULL NAME</label>
+            <input 
+              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
+              type="text" 
+              required 
+              onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>EMAIL ADDRESS</label>
+            <input 
+              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
+              type="email" 
+              required 
+              onChange={(e) => setFormData({...formData, email: e.target.value})} 
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>PHONE NUMBER</label>
+            <input 
+              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
+              type="tel" 
+              required 
+              onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>ADDITIONAL NOTES / ADDRESS</label>
+            <textarea 
+              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px', resize: 'none' }}
+              rows="2"
+              onChange={(e) => setFormData({...formData, address: e.target.value})} 
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            style={{ 
+              marginTop: '20px', 
+              padding: '15px', 
+              backgroundColor: '#0f172a', 
+              color: 'white', 
+              border: 'none', 
+              fontWeight: 'bold', 
+              letterSpacing: '2px', 
+              cursor: 'pointer',
+              transition: '0.3s'
+            }}
+          >
+            {loading ? 'SENDING...' : 'GET A QUOTE'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
