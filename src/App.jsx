@@ -7,22 +7,21 @@ function App() {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
-    phone: '',
-    address: '' 
+    phone: ''
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Sending only name, email, and phone to Supabase
     const { error } = await supabase
       .from('profiles')
       .insert([
         { 
           full_name: formData.full_name, 
           email: formData.email,
-          phone: formData.phone, 
-          address: formData.address 
+          phone: formData.phone 
         }
       ]);
 
@@ -37,39 +36,53 @@ function App() {
   if (submitted) {
     return (
       <div style={{ textAlign: 'center', padding: '50px', fontFamily: 'serif' }}>
-        <h1>Thank You!</h1>
-        <p>Your ghostwriting request has been received.</p>
-        <button onClick={() => setSubmitted(false)}>Send Another</button>
+        <h1>Request Sent!</h1>
+        <p>Our ghostwriting team will reach out via phone or email.</p>
+        <button onClick={() => setSubmitted(false)}>Back to Form</button>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
-      <h2 style={{ textAlign: 'center' }}>Ghost Writing Quote</h2>
+    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', background: 'white' }}>
+      <h2 style={{ textAlign: 'center', fontFamily: 'serif' }}>Ghost Writing Quote</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <input 
-          placeholder="Full Name" 
-          required 
-          onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
-        />
-        <input 
-          type="email"
-          placeholder="Email Address" 
-          required 
-          onChange={(e) => setFormData({...formData, email: e.target.value})} 
-        />
-        <input 
-          placeholder="Phone Number" 
-          required 
-          onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-        />
-        <textarea 
-          placeholder="Briefly describe your project" 
-          onChange={(e) => setFormData({...formData, address: e.target.value})} 
-        />
-        <button type="submit" disabled={loading} style={{ background: '#000', color: '#fff', padding: '10px' }}>
-          {loading ? 'Sending...' : 'Get a Quote'}
+        <div>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>FULL NAME</label>
+          <input 
+            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+            type="text" 
+            required 
+            onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
+          />
+        </div>
+
+        <div>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>EMAIL ADDRESS</label>
+          <input 
+            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+            type="email" 
+            required 
+            onChange={(e) => setFormData({...formData, email: e.target.value})} 
+          />
+        </div>
+
+        <div>
+          <label style={{ fontSize: '12px', fontWeight: 'bold' }}>PHONE NUMBER</label>
+          <input 
+            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+            type="tel" 
+            required 
+            onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          disabled={loading} 
+          style={{ background: '#000', color: '#fff', padding: '12px', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+        >
+          {loading ? 'SENDING...' : 'GET A QUOTE'}
         </button>
       </form>
     </div>
