@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from './supabaseClient';
-import { CheckCircle2, Send } from 'lucide-react';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -9,7 +8,7 @@ function App() {
     full_name: '',
     email: '',
     phone: '',
-    address: '' // Kept as requested in your column list
+    address: '' 
   });
 
   const handleSubmit = async (e) => {
@@ -37,85 +36,42 @@ function App() {
 
   if (submitted) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAF9F6', fontFamily: 'serif' }}>
-        <div style={{ textAlign: 'center', padding: '40px', background: 'white', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-          <CheckCircle2 size={60} color="#C5A059" style={{ margin: '0 auto 20px' }} />
-          <h2 style={{ fontSize: '2rem', color: '#0f172a' }}>Request Received</h2>
-          <p style={{ color: '#64748b' }}>Our ghostwriting experts will contact you shortly.</p>
-          <button onClick={() => setSubmitted(false)} style={{ marginTop: '20px', background: 'none', border: '1px solid #C5A059', color: '#C5A059', padding: '10px 20px', cursor: 'pointer' }}>Send another request</button>
-        </div>
+      <div style={{ textAlign: 'center', padding: '50px', fontFamily: 'serif' }}>
+        <h1>Thank You!</h1>
+        <p>Your ghostwriting request has been received.</p>
+        <button onClick={() => setSubmitted(false)}>Send Another</button>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FAF9F6', padding: '80px 20px', fontFamily: 'sans-serif' }}>
-      <div style={{ maxWidth: '500px', margin: '0 auto', background: 'white', padding: '40px', borderRadius: '4px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        
-        <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ fontFamily: 'serif', fontSize: '2.5rem', color: '#0f172a', marginBottom: '10px' }}>Ghost Writing</h1>
-          <p style={{ color: '#C5A059', fontWeight: 'bold', letterSpacing: '2px', fontSize: '12px', uppercase: 'true' }}>REQUEST A CONSULTATION</p>
-        </header>
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>FULL NAME</label>
-            <input 
-              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
-              type="text" 
-              required 
-              onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>EMAIL ADDRESS</label>
-            <input 
-              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
-              type="email" 
-              required 
-              onChange={(e) => setFormData({...formData, email: e.target.value})} 
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>PHONE NUMBER</label>
-            <input 
-              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px' }}
-              type="tel" 
-              required 
-              onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', letterSpacing: '1px' }}>ADDITIONAL NOTES / ADDRESS</label>
-            <textarea 
-              style={{ width: '100%', border: 'none', borderBottom: '1px solid #e2e8f0', padding: '10px 0', outline: 'none', fontSize: '16px', resize: 'none' }}
-              rows="2"
-              onChange={(e) => setFormData({...formData, address: e.target.value})} 
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={loading}
-            style={{ 
-              marginTop: '20px', 
-              padding: '15px', 
-              backgroundColor: '#0f172a', 
-              color: 'white', 
-              border: 'none', 
-              fontWeight: 'bold', 
-              letterSpacing: '2px', 
-              cursor: 'pointer',
-              transition: '0.3s'
-            }}
-          >
-            {loading ? 'SENDING...' : 'GET A QUOTE'}
-          </button>
-        </form>
-      </div>
+    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
+      <h2 style={{ textAlign: 'center' }}>Ghost Writing Quote</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <input 
+          placeholder="Full Name" 
+          required 
+          onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
+        />
+        <input 
+          type="email"
+          placeholder="Email Address" 
+          required 
+          onChange={(e) => setFormData({...formData, email: e.target.value})} 
+        />
+        <input 
+          placeholder="Phone Number" 
+          required 
+          onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+        />
+        <textarea 
+          placeholder="Briefly describe your project" 
+          onChange={(e) => setFormData({...formData, address: e.target.value})} 
+        />
+        <button type="submit" disabled={loading} style={{ background: '#000', color: '#fff', padding: '10px' }}>
+          {loading ? 'Sending...' : 'Get a Quote'}
+        </button>
+      </form>
     </div>
   );
 }
